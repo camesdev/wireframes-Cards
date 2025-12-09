@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil - Mi Wallet</title>
+    <link rel="stylesheet" href="palette.css" />
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #FBFCFD;
+            color: #111827;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Header Section (Reused) */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--color-white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .app-logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--color-black);
+            color: var(--color-white);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .wallet-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .wallet-address {
+            font-family: monospace;
+            font-size: 0.875rem;
+            color: #6B7280;
+            background: #F3F4F6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* Profile Content */
+        .profile-container {
+            background-color: var(--color-white);
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #E5E7EB;
+            color: #111827;
+        }
+
+        .info-group {
+            margin-bottom: 2rem;
+        }
+
+        .info-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+        }
+
+        .info-value {
+            color: #111827;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .info-value.mono {
+            font-family: monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.25rem 0.625rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background-color: #ECFDF5;
+            color: #059669;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: currentColor;
+        }
+
+        .action-link {
+            font-size: 0.875rem;
+            color: var(--color-black);
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 500;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .action-link:hover {
+            text-decoration: none;
+            opacity: 0.8;
+        }
+
+        /* Warning box for recovery phrase */
+        .warning-box {
+            background-color: #FFFBEB;
+            border: 1px solid #FCD34D;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+        }
+
+        .warning-icon {
+            color: #D97706;
+            font-size: 1.2rem;
+        }
+
+        .warning-text {
+            font-size: 0.875rem;
+            color: #92400E;
+            line-height: 1.4;
+        }
+
+        /* Sidebar (Reused) */
+        .sidebar {
+            width: 250px;
+            background-color: var(--color-white);
+            border-left: 1px solid #E5E7EB;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .menu-item {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #374151;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: #F3F4F6;
+        }
+
+        .menu-item.active {
+            background-color: var(--color-black);
+            color: var(--color-white);
+        }
+
+        .menu-footer {
+            margin-top: auto;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 1rem;
+        }
+
+        .logout {
+            color: #EF4444;
+        }
+
+        .logout:hover {
+            background-color: #FEF2F2;
+        }
+
+        /* Modal Styles */
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: 16px;
+            width: 500px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+            text-align: center;
+            position: relative;
+        }
+
+        .phrase-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .phrase-item {
+            background-color: #F3F4F6;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-family: monospace;
+            border: 1px solid #E5E7EB;
+            position: relative;
+            text-align: center;
+        }
+
+        .phrase-index {
+            color: #9CA3AF;
+            font-size: 0.65rem;
+            position: absolute;
+            top: 4px;
+            left: 8px;
+        }
+
+        .phrase-word {
+            font-weight: 600;
+            color: #111827;
+            font-size: 0.95rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background-color: var(--color-black);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="app-logo">R</div>
+                <div>
+                    <h1 class="page-title">Perfil</h1>
+                    <div style="font-size:0.75rem; color:#6B7280;">Configuración de cuenta y seguridad</div>
+                </div>
+            </div>
+            <div class="wallet-info">
+                <span style="font-size: 0.75rem; color:#6B7280;">Billetera vinculada</span>
+                <div class="wallet-address">0x1234...abcd</div>
+            </div>
+        </header>
+
+        <!-- Profile Info -->
+        <section class="profile-container">
+            <h2 class="section-title">Información de Perfil</h2>
+
+            <!-- Email -->
+            <div class="info-group">
+                <label class="info-label">Correo electrónico</label>
+                <div class="info-value-container">
+                    <span class="info-value">usuario@ejemplo.com</span>
+                </div>
+            </div>
+
+            <!-- País -->
+            <div class="info-group">
+                <label class="info-label">País</label>
+                <div class="info-value-container">
+                    <span class="info-value">Colombia</span>
+                </div>
+            </div>
+
+            <!-- Wallet MFA -->
+            <!-- <div class="info-group">
+                <label class="info-label">Wallet MFA (Autenticación de 2 Factores)</label>
+                <div class="info-value-container">
+                    <div style="display:flex; align-items:center; gap:1rem;">
+                        <span class="info-value">Google Authenticator</span>
+                        <div class="status-badge status-active">
+                            <div class="status-dot"></div>
+                            Activado
+                        </div>
+                    </div>
+                    <button class="action-link">Configurar</button>
+                </div>
+            </div> -->
+
+            <!-- Recovery Phrases -->
+            <div class="info-group">
+                <label class="info-label">Frases de recuperación wallet</label>
+                <div class="info-value-container">
+                    <span class="info-value mono">•••• •••• •••• •••• •••• ••••</span>
+                    <button class="action-link" id="reveal-phrases-btn" style="color:#D97706;">Revelar frases</button>
+                </div>
+                <div class="warning-box">
+                    <span class="warning-icon">⚠</span>
+                    <span class="warning-text">
+                        <strong>Nunca compartas estas frases.</strong> Cualquier persona con acceso a tus frases de
+                        recuperación puede acceder a tus fondos.
+                    </span>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Recovery Phrases Modal -->
+    <div id="phrases-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 style="margin:0 0 0.5rem 0; font-size:1.25rem;">Frases de Recuperación</h2>
+            <p style="color:#6B7280; font-size:0.875rem; margin-bottom:1rem;">
+                Anota estas palabras en orden y guárdalas en un lugar seguro.
+            </p>
+
+            <div class="phrase-grid">
+                <div class="phrase-item"><span class="phrase-index">1</span><span class="phrase-word">witch</span></div>
+                <div class="phrase-item"><span class="phrase-index">2</span><span class="phrase-word">collapse</span>
+                </div>
+                <div class="phrase-item"><span class="phrase-index">3</span><span class="phrase-word">practice</span>
+                </div>
+                <div class="phrase-item"><span class="phrase-index">4</span><span class="phrase-word">feed</span></div>
+                <div class="phrase-item"><span class="phrase-index">5</span><span class="phrase-word">shame</span></div>
+                <div class="phrase-item"><span class="phrase-index">6</span><span class="phrase-word">open</span></div>
+                <div class="phrase-item"><span class="phrase-index">7</span><span class="phrase-word">despair</span>
+                </div>
+                <div class="phrase-item"><span class="phrase-index">8</span><span class="phrase-word">creek</span></div>
+                <div class="phrase-item"><span class="phrase-index">9</span><span class="phrase-word">road</span></div>
+                <div class="phrase-item"><span class="phrase-index">10</span><span class="phrase-word">again</span>
+                </div>
+                <div class="phrase-item"><span class="phrase-index">11</span><span class="phrase-word">ice</span></div>
+                <div class="phrase-item"><span class="phrase-index">12</span><span class="phrase-word">least</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="action-btn" id="copy-phrases-btn" style="border: 1px solid #E5E7EB;">
+                    <span style="margin-right:0.5rem"></span> Copiar
+                </button>
+                <button class="action-btn btn-primary" id="close-phrases-modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar (Right) -->
+    <aside class="sidebar">
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="menu-item" onclick="window.location.href='dashboard.html'">Wallet</li>
+                <li class="menu-item" onclick="window.location.href='my_cards.html'">Mis tarjetas</li>
+                <li class="menu-item" onclick="window.location.href='new_card.html'">Nuevas tarjetas</li>
+                <li class="menu-item active" onclick="window.location.href='profile.html'">Perfil</li>
+                <li class="menu-item">Soporte</li>
+            </ul>
+        </nav>
+        <div class="menu-footer">
+            <ul class="sidebar-menu">
+                <li class="menu-item logout" onclick="window.location.href='login.html'">Cerrar sesión</li>
+            </ul>
+        </div>
+    </aside>
+
+</body>
+
+<script>
+    const phrasesModal = document.getElementById('phrases-modal');
+    const revealBtn = document.getElementById('reveal-phrases-btn');
+    const closePhrasesBtn = document.getElementById('close-phrases-modal');
+    const copyPhrasesBtn = document.getElementById('copy-phrases-btn');
+
+    revealBtn.addEventListener('click', () => {
+        phrasesModal.classList.remove('hidden');
+    });
+
+    closePhrasesBtn.addEventListener('click', () => {
+        phrasesModal.classList.add('hidden');
+    });
+
+    copyPhrasesBtn.addEventListener('click', () => {
+        const words = Array.from(document.querySelectorAll('.phrase-word'))
+            .map((span, index) => `${index + 1}. ${span.textContent}`)
+            .join('\n');
+
+        navigator.clipboard.writeText(words).then(() => {
+            const originalContent = copyPhrasesBtn.innerHTML;
+            copyPhrasesBtn.innerHTML = '<span style="margin-right:0.5rem">✅</span> Copiado';
+            copyPhrasesBtn.style.backgroundColor = '#ECFDF5';
+            copyPhrasesBtn.style.color = '#059669';
+            copyPhrasesBtn.style.borderColor = '#059669';
+
+            setTimeout(() => {
+                copyPhrasesBtn.innerHTML = originalContent;
+                copyPhrasesBtn.style.backgroundColor = '';
+                copyPhrasesBtn.style.color = '';
+                copyPhrasesBtn.style.borderColor = '#E5E7EB';
+            }, 2000);
+        });
+    });
+
+    phrasesModal.addEventListener('click', (e) => {
+        if (e.target === phrasesModal) {
+            phrasesModal.classList.add('hidden');
+        }
+    });
+</script>
+</body>
+
+</html>

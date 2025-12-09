@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mis Tarjetas - Mi Wallet</title>
+    <link rel="stylesheet" href="palette.css" />
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #FBFCFD;
+            color: #111827;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Header Section (Reused) */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--color-white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .app-logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--color-black);
+            color: var(--color-white);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .wallet-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            /* Keeping wallet info for context as per dashboard */
+        }
+
+        .wallet-address {
+            font-family: monospace;
+            font-size: 0.875rem;
+            color: #6B7280;
+            background: #F3F4F6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* Cards Section */
+        .cards-container {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .card-item {
+            width: 280px;
+            height: 170px;
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            flex-shrink: 0;
+            border: 1px solid #E5E7EB;
+            background-color: var(--color-white);
+        }
+
+        .card-item.selected {
+            background-color: var(--color-black);
+            color: var(--color-white);
+            border: none;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .remitt-logo {
+            font-weight: 800;
+            font-style: italic;
+            font-size: 1.2rem;
+        }
+
+        .card-status {
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #10B981;
+            /* Green */
+        }
+
+        .card-number {
+            font-size: 1.25rem;
+            letter-spacing: 0.1em;
+            margin-top: auto;
+            margin-bottom: 1rem;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Mastercard circles simulation */
+        .mc-logo {
+            display: flex;
+        }
+
+        .mc-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        .mc-red {
+            background-color: #EB001B;
+            opacity: 0.8;
+        }
+
+        .mc-yellow {
+            background-color: #F79E1B;
+            margin-left: -12px;
+            opacity: 0.8;
+        }
+
+        /* Card Actions */
+        .card-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background-color: var(--color-white);
+            border: 1px solid #E5E7EB;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+            color: #111827;
+        }
+
+        .action-btn:hover {
+            background-color: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+
+        .btn-primary {
+            background-color: var(--color-black);
+            color: var(--color-white);
+            border: 1px solid var(--color-black);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            background-color: var(--color-black);
+        }
+
+        /* Balance & Limits Info */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background-color: var(--color-white);
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .info-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .limit-bar-bg {
+            height: 6px;
+            background-color: #F3F4F6;
+            border-radius: 3px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .limit-bar-fill {
+            height: 100%;
+            background-color: var(--color-black);
+            width: 10%;
+            /* Example usage */
+        }
+
+        .limit-text {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Transactions Table */
+        .table-container {
+            background-color: var(--color-white);
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 1.5rem;
+            margin: 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.75rem;
+            color: #6B7280;
+            font-weight: 600;
+            background-color: #F9FAFB;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Sidebar (Reused) */
+        .sidebar {
+            width: 250px;
+            background-color: var(--color-white);
+            border-left: 1px solid #E5E7EB;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .menu-item {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #374151;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: #F3F4F6;
+        }
+
+        .menu-item.active {
+            background-color: var(--color-black);
+            color: var(--color-white);
+        }
+
+        .menu-footer {
+            margin-top: auto;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 1rem;
+        }
+
+        .logout {
+            color: #EF4444;
+        }
+
+        .logout:hover {
+            background-color: #FEF2F2;
+        }
+
+        /* Modal Styles */
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: 16px;
+            width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #9CA3AF;
+        }
+
+        .close-icon:hover {
+            color: #111827;
+        }
+
+        /* Modal Card Details */
+        .modal-card-display {
+            background-color: var(--color-black);
+            color: var(--color-white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: left;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            position: relative;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .modal-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.7;
+            margin-bottom: 0.25rem;
+        }
+
+        .modal-value {
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: monospace;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="app-logo">R</div>
+                <div>
+                    <h1 class="page-title">Mis Tarjetas</h1>
+                    <div style="font-size:0.75rem; color:#6B7280;">Gestiona tus tarjetas Remitt</div>
+                </div>
+            </div>
+            <div class="wallet-info">
+                <span style="font-size: 0.75rem; color:#6B7280;">Billetera vinculada</span>
+                <div class="wallet-address">0x1234...abcd</div>
+            </div>
+        </header>
+
+        <!-- Cards Carousel -->
+        <section class="cards-container">
+
+            <!-- Card 1 (Selected) -->
+            <div class="card-item selected">
+                <div class="card-header">
+                    <span class="remitt-logo">Remitt</span>
+                    <div class="card-status">
+                        <div class="status-dot"></div>
+                        Activa
+                    </div>
+                </div>
+                <div class="card-number">
+                    **** **** **** 4829
+                </div>
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8; margin-bottom: 0.5rem;">
+                    Platinum</div>
+                <div class="card-footer">
+                    <div class="mc-logo">
+                        <div class="mc-circle mc-red"></div>
+                        <div class="mc-circle mc-yellow"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="card-item">
+                <div class="card-header">
+                    <span class="remitt-logo" style="color:#111827">Remitt</span>
+                    <div class="card-status" style="color:#6B7280">
+                        <div class="status-dot" style="background-color:#D1D5DB"></div>
+                        Inactiva
+                    </div>
+                </div>
+                <div class="card-number" style="color:#6B7280">
+                    **** **** **** 9102
+                </div>
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8; margin-bottom: 0.5rem; color:#6B7280;">
+                    Gold</div>
+                <div class="card-footer">
+                    <div class="mc-logo">
+                        <div class="mc-circle mc-red"></div>
+                        <div class="mc-circle mc-yellow"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card-item">
+                <div class="card-header">
+                    <span class="remitt-logo" style="color:#111827">Remitt</span>
+                    <div class="card-status">
+                        <div class="status-dot"></div>
+                        Activa
+                    </div>
+                </div>
+                <div class="card-number">
+                    **** **** **** 3341
+                </div>
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8; margin-bottom: 0.5rem;">
+                    Express</div>
+                <div class="card-footer">
+                    <div class="mc-logo">
+                        <div class="mc-circle mc-red"></div>
+                        <div class="mc-circle mc-yellow"></div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Buttons -->
+        <section class="card-actions">
+            <button class="action-btn" id="btn-view-card">Ver tarjeta</button>
+            <button class="action-btn" id="btn-deposit-card">Depositar</button>
+            <button class="action-btn" id="btn-request-physical">Solicitar tarjeta física</button>
+            <button class="action-btn btn-primary" onclick="window.location.href='new_card.html'">Nueva tarjeta
+                +</button>
+        </section>
+
+        <!-- Balance & Limits -->
+        <section class="info-grid">
+            <div class="info-card">
+                <span class="info-label">Balance de la tarjeta</span>
+                <div class="info-value">$ 1,250.00 <span style="font-size:1rem; color:#9CA3AF;">USD</span></div>
+            </div>
+            <div class="info-card">
+                <span class="info-label">Límite anual de recarga</span>
+                <div class="info-value">$ 150,000.00 <span style="font-size:1rem; color:#9CA3AF; font-weight:400;">/ $
+                        15,000</span></div>
+                <div class="limit-bar-bg">
+                    <div class="limit-bar-fill"></div>
+                </div>
+                <div class="limit-text">
+                    <span>Usado: 10%</span>
+                    <span>Disponible: $ 135,000.00</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transactions -->
+        <section class="table-container">
+            <h3 class="section-title">Transacciones Recientes</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha y Hora</th>
+                        <th>Comercio</th>
+                        <th style="text-align:right;">Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>06/12/2025 14:30</td>
+                        <td>Starbucks Coffee</td>
+                        <td style="text-align:right; font-weight:600;">- $ 12.50</td>
+                    </tr>
+                    <tr>
+                        <td>05/12/2025 09:15</td>
+                        <td>Uber Trip</td>
+                        <td style="text-align:right; font-weight:600;">- $ 8.00</td>
+                    </tr>
+                    <tr>
+                        <td>04/12/2025 18:45</td>
+                        <td>Amazon Marketplace</td>
+                        <td style="text-align:right; font-weight:600;">- $ 120.00</td>
+                    </tr>
+                    <tr>
+                        <td>01/12/2025 10:00</td>
+                        <td>Recarga de Wallet</td>
+                        <td style="text-align:right; font-weight:600; color:#10B981;">+ $ 500.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <!-- Sidebar (Right) -->
+    <aside class="sidebar">
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="menu-item" onclick="window.location.href='dashboard.html'">Wallet</li>
+                <li class="menu-item active" onclick="window.location.href='my_cards.html'">Mis tarjetas</li>
+                <li class="menu-item" onclick="window.location.href='new_card.html'">Nuevas tarjetas</li>
+                <li class="menu-item" onclick="window.location.href='profile.html'">Perfil</li>
+                <li class="menu-item">Soporte</li>
+            </ul>
+        </nav>
+        <div class="menu-footer">
+            <ul class="sidebar-menu">
+                <li class="menu-item logout" onclick="window.location.href='login.html'">Cerrar sesión</li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Card Details Modal -->
+    <div id="card-details-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-icon" id="close-card-modal">&times;</span>
+            <h2 style="margin:0 0 1.5rem 0; font-size:1.25rem;">Detalles de la Tarjeta</h2>
+
+            <div class="modal-card-display">
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <span class="remitt-logo">Remitt</span>
+                    <span
+                        style="font-size:0.75rem; background:rgba(255,255,255,0.2); padding:0.2rem 0.5rem; border-radius:4px;">PLATINUM</span>
+                </div>
+
+                <div style="text-align:center; margin: 1rem 0;">
+                    <div class="modal-value" style="font-size:1.4rem; letter-spacing:0.15em;">5412 7512 3412 4829</div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:end;">
+                    <div style="display:flex; gap:2rem;">
+                        <div>
+                            <div class="modal-label">Vencimiento</div>
+                            <div class="modal-value">12 / 28</div>
+                        </div>
+                        <div>
+                            <div class="modal-label">CVC</div>
+                            <div class="modal-value">123</div>
+                        </div>
+                    </div>
+                    <div class="mc-logo">
+                        <div class="mc-circle mc-red"></div>
+                        <div class="mc-circle mc-yellow"></div>
+                    </div>
+                </div>
+            </div>
+
+            <p style="font-size:0.875rem; color:#6B7280; line-height:1.5;">
+                Estos son los datos de tu tarjeta virtual. Puedes usarlos para compras online seguras.
+            </p>
+        </div>
+    </div>
+
+    <!-- Deposit to Card Modal -->
+    <div id="deposit-card-modal" class="modal hidden">
+        <div class="modal-content" style="width: 400px; text-align:left;">
+            <h2 style="margin:0 0 1.5rem 0; font-size:1.25rem; text-align:center;">Recargar Tarjeta</h2>
+
+            <div
+                style="background:#F9FAFB; padding:1rem; border-radius:8px; margin-bottom:1.5rem; border:1px solid #E5E7EB;">
+                <span class="info-label" style="font-size:0.75rem;">Saldo disponible en Wallet</span>
+                <div style="font-size:1.25rem; font-weight:700;">$ 12,450.00 <span
+                        style="font-size:0.875rem; color:#6B7280;">USDT</span></div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:1.5rem;">
+                <label style="display:block; font-size:0.875rem; font-weight:600; margin-bottom:0.5rem;">Monto a
+                    recargar</label>
+                <input type="number" id="deposit-amount" class="form-input" placeholder="0.00"
+                    style="width:100%; padding:0.75rem; border:1px solid #D1D5DB; border-radius:8px;">
+            </div>
+
+            <div style="border-top:1px solid #E5E7EB; padding-top:1rem; margin-bottom:1.5rem;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; font-size:0.875rem;">
+                    <span style="color:#6B7280;">Comisión (4.5%)</span>
+                    <span id="deposit-fee">$ 0.00</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.1rem;">
+                    <span>Total a debitar</span>
+                    <span id="deposit-total">$ 0.00</span>
+                </div>
+            </div>
+
+            <button class="action-btn btn-primary" style="width:100%; justify-content:center;">Confirmar
+                Recarga</button>
+            <button class="action-btn" id="close-deposit-card"
+                style="width:100%; margin-top:0.5rem; border:none; color:#6B7280;">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Request Physical Card Modal -->
+    <div id="physical-card-modal" class="modal hidden">
+        <div class="modal-content" style="width: 400px; text-align:left;">
+            <h2 style="margin:0 0 1.5rem 0; font-size:1.25rem; text-align:center;">Solicitar Tarjeta Física</h2>
+
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label style="display:block; font-size:0.875rem; font-weight:600; margin-bottom:0.5rem;">País</label>
+                <select class="form-input"
+                    style="width:100%; padding:0.75rem; border:1px solid #D1D5DB; border-radius:8px;">
+                    <option>Colombia</option>
+                    <option>México</option>
+                    <option>Argentina</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label style="display:block; font-size:0.875rem; font-weight:600; margin-bottom:0.5rem;">Estado /
+                    Departamento</label>
+                <input type="text" class="form-input" placeholder="Ej. Antioquia"
+                    style="width:100%; padding:0.75rem; border:1px solid #D1D5DB; border-radius:8px;">
+            </div>
+
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label style="display:block; font-size:0.875rem; font-weight:600; margin-bottom:0.5rem;">Ciudad</label>
+                <input type="text" class="form-input" placeholder="Ej. Medellín"
+                    style="width:100%; padding:0.75rem; border:1px solid #D1D5DB; border-radius:8px;">
+            </div>
+
+            <div class="form-group" style="margin-bottom:1.5rem;">
+                <label style="display:block; font-size:0.875rem; font-weight:600; margin-bottom:0.5rem;">Código
+                    Postal</label>
+                <input type="text" class="form-input" placeholder="Ej. 050021"
+                    style="width:100%; padding:0.75rem; border:1px solid #D1D5DB; border-radius:8px;">
+            </div>
+
+            <button class="action-btn btn-primary" style="width:100%; justify-content:center;">Enviar Solicitud</button>
+            <button class="action-btn" id="close-physical-card"
+                style="width:100%; margin-top:0.5rem; border:none; color:#6B7280;">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        /* View Card Modal Logic */
+        const viewCardBtn = document.getElementById('btn-view-card');
+        const cardModal = document.getElementById('card-details-modal');
+        const closeCardBtn = document.getElementById('close-card-modal');
+
+        viewCardBtn.addEventListener('click', () => {
+            cardModal.classList.remove('hidden');
+        });
+
+        closeCardBtn.addEventListener('click', () => {
+            cardModal.classList.add('hidden');
+        });
+
+        // Close on click outside
+        cardModal.addEventListener('click', (e) => {
+            if (e.target === cardModal) {
+                cardModal.classList.add('hidden');
+            }
+        });
+
+        /* Deposit Card Modal Logic */
+        const depositCardBtn = document.getElementById('btn-deposit-card');
+        const depositCardModal = document.getElementById('deposit-card-modal');
+        const closeDepositCardBtn = document.getElementById('close-deposit-card');
+        const amountInput = document.getElementById('deposit-amount');
+        const feeDisplay = document.getElementById('deposit-fee');
+        const totalDisplay = document.getElementById('deposit-total');
+
+        depositCardBtn.addEventListener('click', () => {
+            depositCardModal.classList.remove('hidden');
+        });
+
+        closeDepositCardBtn.addEventListener('click', () => {
+            depositCardModal.classList.add('hidden');
+        });
+
+        depositCardModal.addEventListener('click', (e) => {
+            if (e.target === depositCardModal) {
+                depositCardModal.classList.add('hidden');
+            }
+        });
+
+        // Calculation Logic
+        amountInput.addEventListener('input', (e) => {
+            const amount = parseFloat(e.target.value) || 0;
+            const fee = amount * 0.045;
+            const total = amount + fee;
+
+            feeDisplay.textContent = '$ ' + fee.toFixed(2);
+            totalDisplay.textContent = '$ ' + total.toFixed(2);
+        });
+
+        /* Request Physical Card Modal Logic */
+        const requestPhysicalBtn = document.getElementById('btn-request-physical');
+        const physicalCardModal = document.getElementById('physical-card-modal');
+        const closePhysicalCardBtn = document.getElementById('close-physical-card');
+
+        requestPhysicalBtn.addEventListener('click', () => {
+            physicalCardModal.classList.remove('hidden');
+        });
+
+        closePhysicalCardBtn.addEventListener('click', () => {
+            physicalCardModal.classList.add('hidden');
+        });
+
+        physicalCardModal.addEventListener('click', (e) => {
+            if (e.target === physicalCardModal) {
+                physicalCardModal.classList.add('hidden');
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

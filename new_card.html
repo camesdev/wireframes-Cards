@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nueva Tarjeta - Mi Wallet</title>
+    <link rel="stylesheet" href="palette.css" />
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #FBFCFD;
+            color: #111827;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Header Section (Reused) */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--color-white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .app-logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--color-black);
+            color: var(--color-white);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .wallet-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .wallet-address {
+            font-family: monospace;
+            font-size: 0.875rem;
+            color: #6B7280;
+            background: #F3F4F6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* Section Title */
+        .section-headline {
+            text-align: center;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-headline h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        /* Plans Grid */
+        .plans-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .plan-card {
+            background-color: var(--color-white);
+            border: 1px solid #E5E7EB;
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #111827;
+        }
+
+        /* Card Mockup */
+        .card-mockup {
+            width: 100%;
+            aspect-ratio: 1.58;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            position: relative;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            /* Space out internal elements */
+            padding: 1.5rem;
+            box-sizing: border-box;
+        }
+
+        /* Mockup Variants based on Plan for visual distinction (keeping it subtle/grayscale as per "sin tomar colores de imagen" request, but maybe slight shades) */
+        .mockup-express {
+            background: linear-gradient(135deg, #F3F4F6 0%, #D1D5DB 100%);
+        }
+
+        .mockup-gold {
+            background: linear-gradient(135deg, #E5E7EB 0%, #9CA3AF 100%);
+        }
+
+        .mockup-platinum {
+            background: linear-gradient(135deg, #374151 0%, #111827 100%);
+            color: white;
+        }
+
+        .mockup-chip {
+            width: 32px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            align-self: flex-start;
+        }
+
+        .mockup-logo {
+            align-self: flex-end;
+            font-weight: 800;
+            font-style: italic;
+            opacity: 0.5;
+        }
+
+        /* Limit Display */
+        .plan-limit-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .plan-limit-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1;
+        }
+
+        .plan-limit-label {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-top: 0.25rem;
+        }
+
+        /* Select Button */
+        .select-btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 100px;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #F3F4F6;
+            color: #111827;
+            transition: all 0.2s;
+            margin-bottom: 2rem;
+        }
+
+        .select-btn:hover {
+            background-color: #E5E7EB;
+        }
+
+        .plan-card:hover .select-btn {
+            background-color: var(--color-black);
+            color: var(--color-white);
+        }
+
+        /* Features List */
+        .features-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: #374151;
+        }
+
+        .check-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #E5E7EB;
+            color: #374151;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            line-height: 1.4;
+        }
+
+        /* Sidebar (Reused) */
+        .sidebar {
+            width: 250px;
+            background-color: var(--color-white);
+            border-left: 1px solid #E5E7EB;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .menu-item {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #374151;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: #F3F4F6;
+        }
+
+        .menu-item.active {
+            background-color: var(--color-black);
+            color: var(--color-white);
+        }
+
+        .menu-footer {
+            margin-top: auto;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 1rem;
+        }
+
+        .logout {
+            color: #EF4444;
+        }
+
+        .logout:hover {
+            background-color: #FEF2F2;
+        }
+
+        /* Modal Styles */
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: 16px;
+            width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #9CA3AF;
+        }
+
+        .close-icon:hover {
+            color: #111827;
+        }
+
+        /* Modal Action Buttons */
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--color-black);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        #cancel-plan-modal {
+            background-color: transparent;
+            color: #6B7280;
+            font-weight: 600;
+        }
+
+        #cancel-plan-modal:hover {
+            color: #374151;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="app-logo">R</div>
+                <div>
+                    <h1 class="page-title">Nueva Tarjeta</h1>
+                    <div style="font-size:0.75rem; color:#6B7280;">Solicita tu tarjeta Remitt</div>
+                </div>
+            </div>
+            <div class="wallet-info">
+                <span style="font-size: 0.75rem; color:#6B7280;">Billetera vinculada</span>
+                <div class="wallet-address">0x1234...abcd</div>
+            </div>
+        </header>
+
+        <div class="section-headline">
+            <h2>Planes</h2>
+        </div>
+
+        <!-- Plans -->
+        <section class="plans-container">
+
+            <!-- Express Plan -->
+            <article class="plan-card">
+                <h3 class="plan-name">Express</h3>
+
+                <div class="card-mockup mockup-express">
+                    <div class="mockup-chip"></div>
+                    <div class="mockup-logo">Remitt</div>
+                </div>
+
+                <div class="plan-limit-container">
+                    <div class="plan-limit-value">$ 20,000</div>
+                    <div class="plan-limit-label">Límite anual de recarga</div>
+                </div>
+
+                <button class="select-btn select-plan-btn" data-plan="Express">Seleccionar Plan</button>
+
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text"><strong>Fee de recarga: 6%</strong></div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Duración 1 año</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Tarjeta Virtual incluida</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Tarjeta Física (Según región)</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Google Pay y Apple Pay</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Pagos en línea y Físico</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Gold Plan -->
+            <article class="plan-card">
+                <h3 class="plan-name">Gold</h3>
+
+                <div class="card-mockup mockup-gold">
+                    <div class="mockup-chip"></div>
+                    <div class="mockup-logo">Remitt</div>
+                </div>
+
+                <div class="plan-limit-container">
+                    <div class="plan-limit-value">$ 50,000</div>
+                    <div class="plan-limit-label">Límite anual de recarga</div>
+                </div>
+
+                <button class="select-btn select-plan-btn" data-plan="Gold">Seleccionar Plan</button>
+
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text"><strong>Fee de recarga: 5%</strong></div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Duración 1 año</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Tarjeta Virtual incluida</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Tarjeta Física (Según región)</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Google Pay y Apple Pay</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Pagos en línea y Físico</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Platinum Plan -->
+            <article class="plan-card">
+                <h3 class="plan-name">Platinum</h3>
+
+                <div class="card-mockup mockup-platinum">
+                    <div class="mockup-chip" style="background:rgba(255,255,255,0.7)"></div>
+                    <div class="mockup-logo">Remitt</div>
+                </div>
+
+                <div class="plan-limit-container">
+                    <div class="plan-limit-value">$ 150,000</div>
+                    <div class="plan-limit-label">Límite anual de recarga</div>
+                </div>
+
+                <button class="select-btn select-plan-btn" data-plan="Platinum">Seleccionar Plan</button>
+
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text"><strong>Fee de recarga: 4%</strong></div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Duración 1 año</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Tarjeta Virtual incluida</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Tarjeta Física (Según región)</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Google Pay y Apple Pay</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="check-icon">✓</div>
+                        <div class="feature-text">Pagos en línea y Físico</div>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Plan Selection Modal -->
+        <div id="plan-modal" class="modal hidden">
+            <div class="modal-content" style="width: 400px; text-align:left;">
+                <h2 style="margin:0 0 1.5rem 0; font-size:1.25rem; text-align:center;">Confirmar Plan</h2>
+
+                <div
+                    style="background:#F9FAFB; padding:1rem; border-radius:8px; margin-bottom:1.5rem; border:1px solid #E5E7EB;">
+                    <span
+                        style="font-size:0.75rem; display:block; color:#6B7280; font-weight:600; margin-bottom:0.25rem;">Saldo
+                        disponible en Wallet</span>
+                    <div style="font-size:1.25rem; font-weight:700;">$ 12,450.00 <span
+                            style="font-size:0.875rem; color:#6B7280;">USDT</span></div>
+                </div>
+
+                <div style="border-top:1px solid #E5E7EB; padding-top:1rem; margin-bottom:1.5rem;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; font-size:0.875rem;">
+                        <span style="color:#6B7280;">Costo del Plan</span>
+                        <span>$ 100.00</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.1rem;">
+                        <span>Total a pagar</span>
+                        <span>$ 100.00</span>
+                    </div>
+                </div>
+
+                <button class="action-btn btn-primary" style="width:100%; justify-content:center;">Confirmar y
+                    Pagar</button>
+                <button class="action-btn" id="cancel-plan-modal"
+                    style="width:100%; margin-top:0.5rem; border:none; color:#6B7280;">Cancelar</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Sidebar (Right) -->
+    <aside class="sidebar">
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="menu-item" onclick="window.location.href='dashboard.html'">Wallet</li>
+                <li class="menu-item" onclick="window.location.href='my_cards.html'">Mis tarjetas</li>
+                <li class="menu-item active" onclick="window.location.href='new_card.html'">Nuevas tarjetas</li>
+                <li class="menu-item" onclick="window.location.href='profile.html'">Perfil</li>
+                <li class="menu-item">Soporte</li>
+            </ul>
+        </nav>
+        <div class="menu-footer">
+            <ul class="sidebar-menu">
+                <li class="menu-item logout" onclick="window.location.href='login.html'">Cerrar sesión</li>
+            </ul>
+        </div>
+    </aside>
+
+    <script>
+        const planModal = document.getElementById('plan-modal');
+        const cancelPlanBtn = document.getElementById('cancel-plan-modal');
+
+        document.querySelectorAll('.select-plan-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                planModal.classList.remove('hidden');
+            });
+        });
+
+        cancelPlanBtn.addEventListener('click', () => {
+            planModal.classList.add('hidden');
+        });
+
+        planModal.addEventListener('click', (e) => {
+            if (e.target === planModal) {
+                planModal.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

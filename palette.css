@@ -1,0 +1,23 @@
+:root {
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-gray-1: #E0E0E0; /* light gray */
+  --color-gray-2: #B0B0B0; /* medium light */
+  --color-gray-3: #808080; /* medium */
+  --color-gray-4: #404040; /* dark gray */
+}
+
+/* Utility classes (optional) */
+.bg-white { background-color: var(--color-white); }
+.bg-black { background-color: var(--color-black); }
+.bg-gray-1 { background-color: var(--color-gray-1); }
+.bg-gray-2 { background-color: var(--color-gray-2); }
+.bg-gray-3 { background-color: var(--color-gray-3); }
+.bg-gray-4 { background-color: var(--color-gray-4); }
+
+.text-white { color: var(--color-white); }
+.text-black { color: var(--color-black); }
+.text-gray-1 { color: var(--color-gray-1); }
+.text-gray-2 { color: var(--color-gray-2); }
+.text-gray-3 { color: var(--color-gray-3); }
+.text-gray-4 { color: var(--color-gray-4); }
