@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Mi Wallet</title>
+    <link rel="stylesheet" href="palette.css" />
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #FBFCFD;
+            color: #111827;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--color-white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .app-logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--color-black);
+            color: var(--color-white);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .admin-badge {
+            background-color: #111827;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background-color: var(--color-white);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #D1D5DB;
+        }
+
+        .card-label {
+            font-size: 0.875rem;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .card-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .card-subtext {
+            font-size: 0.75rem;
+            color: #9CA3AF;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Specific Card Styles */
+        .card-facil {
+            background: linear-gradient(135deg, #111827 0%, #374151 100%);
+            color: white;
+            border: none;
+        }
+
+        .card-facil .card-label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .card-facil .card-value {
+            color: white;
+        }
+
+        .card-facil .card-icon svg {
+            fill: white;
+        }
+
+        .split-balance {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+
+        .split-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .split-label {
+            font-size: 0.75rem;
+            color: #6B7280;
+            font-weight: 600;
+        }
+
+        .split-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        /* Sidebar (Right) */
+        .sidebar {
+            width: 250px;
+            background-color: var(--color-white);
+            border-left: 1px solid #E5E7EB;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .menu-item {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #374151;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: #F3F4F6;
+        }
+
+        .menu-item.active {
+            background-color: var(--color-black);
+            color: var(--color-white);
+        }
+
+        .menu-footer {
+            margin-top: auto;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 1rem;
+        }
+
+        .logout {
+            color: #EF4444;
+        }
+
+        .logout:hover {
+            background-color: #FEF2F2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="app-logo">A</div>
+                <div>
+                    <h1 class="page-title">Panel de Administrador</h1>
+                    <div style="font-size:0.75rem; color:#6B7280;">Vista general del sistema</div>
+                </div>
+            </div>
+            <div class="admin-badge">ADMIN MODE</div>
+        </header>
+
+        <!-- Dashboard Widgets -->
+        <div class="dashboard-grid">
+
+            <!-- Widget 1: Fácil Balance (Proveedor) -->
+            <div class="summary-card card-facil">
+                <div class="card-icon" style="background:rgba(255,255,255,0.1);">
+                    <!-- Building/Bank Icon -->
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 21H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M5 21V7L12 3L19 7V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M9 10H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M9 14H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="card-label">Proveedor "Fácil"</div>
+                <div class="card-value">$ 45,230.50</div>
+                <div class="card-subtext">Balance flotante disponible</div>
+            </div>
+
+            <!-- Widget 2: Platform Balance (USDT/USDC) -->
+            <div class="summary-card">
+                <div class="card-icon" style="background:#F3F4F6; color:#374151;">
+                    <!-- Coins Icon -->
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M12 8V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M8 12H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="card-label">Balance Plataforma</div>
+                <div style="display:flex; gap:1.5rem; margin-top:0.5rem;">
+                    <div class="split-item">
+                        <span class="split-label">USDT</span>
+                        <span class="split-amount">128,400</span>
+                    </div>
+                    <div class="split-item">
+                        <span class="split-label">USDC</span>
+                        <span class="split-amount">54,200</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widget 3: Commissions -->
+            <div class="summary-card">
+                <div class="card-icon" style="background:#ECFDF5; color:#059669;">
+                    <!-- Trending Up / Commission Icon -->
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23 6L13.5 15.5L8.5 10.5L1 18" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M17 6H23V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="card-label">Comisiones Acumuladas</div>
+                <div class="card-value">$ 3,450.00</div>
+                <div class="card-subtext">Total histórico</div>
+            </div>
+
+            <!-- Widget 4: Active Cards -->
+            <div class="summary-card">
+                <div class="card-icon" style="background:#EFF6FF; color:#2563EB;">
+                    <!-- Credit Card Icon -->
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="card-label">Tarjetas Activas</div>
+                <div class="card-value">1,245</div>
+                <div class="card-subtext">+12 esta semana</div>
+            </div>
+
+            <!-- Widget 5: User Recharges -->
+            <div class="summary-card">
+                <div class="card-icon" style="background:#FEF3C7; color:#D97706;">
+                    <!-- Lightning/Zap Icon -->
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="card-label">Total Recargas Usuarios</div>
+                <div class="card-value">$ 892,100.00</div>
+                <div class="card-subtext">Volumen total procesado</div>
+            </div>
+
+            <!-- Widget 6: Smart Contract BNB -->
+            <div class="summary-card">
+                <div class="card-icon" style="background:#FFF7ED; color:#C2410C;">
+                    <!-- Link/Chain Icon -->
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M10 13A5 5 0 0 0 7.54 7.54l-5.42 5.42 5.42 5.42A5 5 0 0 0 10 13Zm4-2a5 5 0 0 0 2.46 5.46l5.42-5.42-5.42-5.42A5 5 0 0 0 14 11Zm-4 1h4"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="card-label">Gas / Contrato</div>
+                <div class="card-value">4.5 BNB</div>
+                <div class="card-subtext">Balance para transacciones</div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Sidebar (Right) -->
+    <aside class="sidebar">
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="menu-item active" onclick="window.location.href='admin_dashboard.html'">Dashboard</li>
+                <li class="menu-item" onclick="window.location.href='usuarios_admin.html'">Usuarios</li>
+                <li class="menu-item" onclick="window.location.href='config-fees_admin.html'">Configuración Fees</li>
+                <li class="menu-item" onclick="window.location.href='recarga-flotante_admin.html'">Recarga Flotante</li>
+            </ul>
+        </nav>
+        <div class="menu-footer">
+            <ul class="sidebar-menu">
+                <li class="menu-item logout" onclick="window.location.href='login.html'">Cerrar sesión</li>
+            </ul>
+        </div>
+    </aside>
+
+</body>
+
+</html>

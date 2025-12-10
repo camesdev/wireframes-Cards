@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usuarios - Admin Dashboard</title>
+    <link rel="stylesheet" href="palette.css" />
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #FBFCFD;
+            color: #111827;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--color-white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .app-logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--color-black);
+            color: var(--color-white);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .admin-badge {
+            background-color: #111827;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        /* Summary Grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .summary-card {
+            background-color: var(--color-white);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .card-label {
+            font-size: 0.875rem;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Filter Section */
+        .actions-bar {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+            width: 20px;
+            height: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.8rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            box-sizing: border-box;
+        }
+
+        /* Users Table */
+        .table-container {
+            background-color: var(--color-white);
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        th {
+            background-color: #F9FAFB;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .user-cell {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-email {
+            font-weight: 500;
+            color: #111827;
+        }
+
+        .user-wallet {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-top: 0.25rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background-color: #ECFDF5;
+            color: #059669;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background-color: #F9FAFB;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .page-info {
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+
+        .page-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .page-btn {
+            background: white;
+            border: 1px solid #D1D5DB;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        .page-btn:hover {
+            background-color: #F3F4F6;
+        }
+
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-btn.active {
+            background-color: #F3F4F6;
+            font-weight: 600;
+        }
+
+        /* Sidebar (Right) */
+        .sidebar {
+            width: 250px;
+            background-color: var(--color-white);
+            border-left: 1px solid #E5E7EB;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .menu-item {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #374151;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: #F3F4F6;
+        }
+
+        .menu-item.active {
+            background-color: var(--color-black);
+            color: var(--color-white);
+        }
+
+        .menu-footer {
+            margin-top: auto;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 1rem;
+        }
+
+        .logout {
+            color: #EF4444;
+        }
+
+        .logout:hover {
+            background-color: #FEF2F2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="app-logo">U</div>
+                <div>
+                    <h1 class="page-title">Gestión de Usuarios</h1>
+                    <div style="font-size:0.75rem; color:#6B7280;">Administra el acceso y tarjetas</div>
+                </div>
+            </div>
+            <div class="admin-badge">ADMIN MODE</div>
+        </header>
+
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="card-icon" style="background:#EFF6FF; color:#2563EB;">
+                    <!-- Users Icon -->
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="card-label">Total Usuarios</div>
+                <div class="card-value">2,845</div>
+            </div>
+            <div class="summary-card">
+                <div class="card-icon" style="background:#ECFDF5; color:#059669;">
+                    <!-- Credit Card Icon -->
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <line x1="1" y1="10" x2="23" y2="10" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="card-label">Total Tarjetas</div>
+                <div class="card-value">1,245</div>
+            </div>
+        </div>
+
+        <!-- Users Filters & List -->
+        <section>
+            <div class="actions-bar">
+                <div class="search-container">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" class="search-input" placeholder="Buscar por email o wallet...">
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Usuario / Wallet</th>
+                            <th>Fecha Registro</th>
+                            <th>Tarjetas Activas</th>
+                            <th>Estado</th>
+                            <th style="text-align:right;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <span class="user-email">carlos.gomez@example.com</span>
+                                    <span class="user-wallet">0x71C...92F1</span>
+                                </div>
+                            </td>
+                            <td>08 Dic 2025</td>
+                            <td>2</td>
+                            <td><span class="status-badge status-active">Activo</span></td>
+                            <td style="text-align:right;">
+                                <button
+                                    style="background:none; border:none; cursor:pointer; color:#6B7280;">•••</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <span class="user-email">ana.martinez@test.com</span>
+                                    <span class="user-wallet">0x3A2...8B44</span>
+                                </div>
+                            </td>
+                            <td>05 Dic 2025</td>
+                            <td>1</td>
+                            <td><span class="status-badge status-active">Activo</span></td>
+                            <td style="text-align:right;">
+                                <button
+                                    style="background:none; border:none; cursor:pointer; color:#6B7280;">•••</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <span class="user-email">luis.perez@domain.co</span>
+                                    <span class="user-wallet">0x99F...1A2C</span>
+                                </div>
+                            </td>
+                            <td>01 Dic 2025</td>
+                            <td>0</td>
+                            <td><span class="status-badge status-active">Activo</span></td>
+                            <td style="text-align:right;">
+                                <button
+                                    style="background:none; border:none; cursor:pointer; color:#6B7280;">•••</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <span class="user-email">maria.rodriguez@web.net</span>
+                                    <span class="user-wallet">0xB21...55D9</span>
+                                </div>
+                            </td>
+                            <td>28 Nov 2025</td>
+                            <td>3</td>
+                            <td><span class="status-badge status-active">Activo</span></td>
+                            <td style="text-align:right;">
+                                <button
+                                    style="background:none; border:none; cursor:pointer; color:#6B7280;">•••</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <span class="user-email">jorge.soto@mail.com</span>
+                                    <span class="user-wallet">0x4D2...33E1</span>
+                                </div>
+                            </td>
+                            <td>20 Nov 2025</td>
+                            <td>1</td>
+                            <td><span class="status-badge status-active">Activo</span></td>
+                            <td style="text-align:right;">
+                                <button
+                                    style="background:none; border:none; cursor:pointer; color:#6B7280;">•••</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    <div class="page-info">Mostrando 1-5 de 2,845 usuarios</div>
+                    <div class="page-controls">
+                        <button class="page-btn disabled">Anterior</button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Sidebar (Right) -->
+    <aside class="sidebar">
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="menu-item" onclick="window.location.href='admin_dashboard.html'">Dashboard</li>
+                <li class="menu-item active" onclick="window.location.href='usuarios_admin.html'">Usuarios</li>
+                <li class="menu-item" onclick="window.location.href='config-fees_admin.html'">Configuración Fees</li>
+                <li class="menu-item" onclick="window.location.href='recarga-flotante_admin.html'">Recarga Flotante</li>
+            </ul>
+        </nav>
+        <div class="menu-footer">
+            <ul class="sidebar-menu">
+                <li class="menu-item logout" onclick="window.location.href='login.html'">Cerrar sesión</li>
+            </ul>
+        </div>
+    </aside>
+
+</body>
+
+</html>

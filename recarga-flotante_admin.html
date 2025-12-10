@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recarga Flotante - Admin Dashboard</title>
+    <link rel="stylesheet" href="palette.css" />
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #FBFCFD;
+            color: #111827;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--color-white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .app-logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--color-black);
+            color: var(--color-white);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .admin-badge {
+            background-color: #111827;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        /* Cards Container */
+        .cards-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .summary-card {
+            background-color: var(--color-white);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .card-title {
+            font-size: 0.875rem;
+            color: #6B7280;
+            font-weight: 600;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .sub-balance {
+            font-size: 0.875rem;
+            color: #6B7280;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .sub-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-recharge {
+            background-color: #111827;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.875rem;
+            align-self: flex-start;
+            transition: background 0.2s;
+        }
+
+        .btn-recharge:hover {
+            background-color: #374151;
+        }
+
+        /* History Table */
+        .table-section h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .table-container {
+            background-color: var(--color-white);
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        th {
+            background-color: #F9FAFB;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background-color: #FEF3C7;
+            color: #D97706;
+        }
+
+        .status-success {
+            background-color: #ECFDF5;
+            color: #059669;
+        }
+
+        .status-rejected {
+            background-color: #FEF2F2;
+            color: #DC2626;
+        }
+
+        /* Sidebar (Right) */
+        .sidebar {
+            width: 250px;
+            background-color: var(--color-white);
+            border-left: 1px solid #E5E7EB;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .menu-item {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #374151;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: #F3F4F6;
+        }
+
+        .menu-item.active {
+            background-color: var(--color-black);
+            color: var(--color-white);
+        }
+
+        .menu-footer {
+            margin-top: auto;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 1rem;
+        }
+
+        .logout {
+            color: #EF4444;
+        }
+
+        .logout:hover {
+            background-color: #FEF2F2;
+        }
+
+        /* Modal Styles */
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: 16px;
+            width: 450px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+            position: relative;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .info-box {
+            background-color: #F9FAFB;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #6B7280;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-modal-primary {
+            background-color: #111827;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-modal-secondary {
+            background-color: white;
+            color: #374151;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="app-logo">R</div>
+                <div>
+                    <h1 class="page-title">Recarga Flotante</h1>
+                    <div style="font-size:0.75rem; color:#6B7280;">Gestión de liquidez del proveedor</div>
+                </div>
+            </div>
+            <div class="admin-badge">ADMIN MODE</div>
+        </header>
+
+        <!-- Balance Cards -->
+        <div class="cards-row">
+
+            <!-- Floating Balance Card -->
+            <div class="summary-card"
+                style="background: linear-gradient(135deg, #111827 0%, #374151 100%); color: white; border:none;">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title" style="color:rgba(255,255,255,0.7);">Balance Flotante Total</div>
+                        <div class="balance-amount" style="color:white; margin-top:0.5rem;">$ 100,000.00</div>
+                    </div>
+                    <div class="card-icon" style="background:rgba(255,255,255,0.1);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="sub-balance">
+                    <div class="sub-row">
+                        <span style="color:rgba(255,255,255,0.6);">Disponible</span>
+                        <span style="font-weight:600;">$ 42,100.00</span>
+                    </div>
+                    <div class="sub-row">
+                        <span style="color:rgba(255,255,255,0.6);">Usado</span>
+                        <span style="font-weight:600;">$ 57,900.00</span>
+                    </div>
+                </div>
+                <button class="btn-recharge" style="background:white; color:black; margin-top:auto;"
+                    onclick="document.getElementById('recharge-modal').classList.remove('hidden')">
+                    + Nueva Recarga
+                </button>
+            </div>
+
+            <!-- Platform Balance Card -->
+            <div class="summary-card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Balance Plataforma</div>
+                        <div class="balance-amount" style="margin-top:0.5rem;">$ 182,600.00</div>
+                    </div>
+                    <div class="card-icon" style="background:#F3F4F6;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2">
+                            <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+                            <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+                            <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="sub-balance" style="margin-top:auto;">
+                    <div class="sub-row">
+                        <span style="color:#6B7280;">USDT (Tether)</span>
+                        <span style="font-weight:600; color:#111827;">128,400.00</span>
+                    </div>
+                    <div style="height:1px; background:#F3F4F6; margin:0.5rem 0;"></div>
+                    <div class="sub-row">
+                        <span style="color:#6B7280;">USDC (USD Coin)</span>
+                        <span style="font-weight:600; color:#111827;">54,200.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recharge History -->
+        <section class="table-section">
+            <h3>Historial de Recargas</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                            <th>Concepto</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>09/12/2025 - 14:30</td>
+                            <td style="font-weight:600;">$ 5,000.00</td>
+                            <td style="color:#6B7280;">Recarga de liquidez #8823</td>
+                            <td><span class="status-badge status-pending">Pendiente</span></td>
+                        </tr>
+                        <tr>
+                            <td>08/12/2025 - 09:15</td>
+                            <td style="font-weight:600;">$ 10,000.00</td>
+                            <td style="color:#6B7280;">Recarga de liquidez #8821</td>
+                            <td><span class="status-badge status-success">Finalizado</span></td>
+                        </tr>
+                        <tr>
+                            <td>05/12/2025 - 18:45</td>
+                            <td style="font-weight:600;">$ 2,500.00</td>
+                            <td style="color:#6B7280;">Recarga de liquidez #8815</td>
+                            <td><span class="status-badge status-rejected">Rechazado</span></td>
+                        </tr>
+                        <tr>
+                            <td>01/12/2025 - 10:00</td>
+                            <td style="font-weight:600;">$ 15,000.00</td>
+                            <td style="color:#6B7280;">Recarga de liquidez #8801</td>
+                            <td><span class="status-badge status-success">Finalizado</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Sidebar (Right) -->
+    <aside class="sidebar">
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="menu-item" onclick="window.location.href='admin_dashboard.html'">Dashboard</li>
+                <li class="menu-item" onclick="window.location.href='usuarios_admin.html'">Usuarios</li>
+                <li class="menu-item" onclick="window.location.href='config-fees_admin.html'">Configuración Fees</li>
+                <li class="menu-item active" onclick="window.location.href='recarga-flotante_admin.html'">Recarga
+                    Flotante</li>
+            </ul>
+        </nav>
+        <div class="menu-footer">
+            <ul class="sidebar-menu">
+                <li class="menu-item logout" onclick="window.location.href='login.html'">Cerrar sesión</li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Modal Recarga -->
+    <div id="recharge-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nueva Recarga de Liquidez</h2>
+                <p style="color:#6B7280; font-size:0.875rem; margin-top:0.25rem;">Transfiere fondos de la plataforma al
+                    proveedor.</p>
+            </div>
+
+            <div class="info-box">
+                <div class="info-item">
+                    <span class="info-label">Disponible USDT</span>
+                    <span class="info-value">128,400.00</span>
+                </div>
+                <div class="info-item" style="text-align:right;">
+                    <span class="info-label">Disponible USDC</span>
+                    <span class="info-value">54,200.00</span>
+                </div>
+            </div>
+
+            <form
+                onsubmit="event.preventDefault(); alert('Recarga iniciada (simulación)'); document.getElementById('recharge-modal').classList.add('hidden');">
+                <div class="form-group">
+                    <label class="form-label">Seleccionar Token</label>
+                    <select class="form-input" style="background-color: white;">
+                        <option value="USDT">USDT (Tether)</option>
+                        <option value="USDC">USDC (USD Coin)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monto a recargar</label>
+                    <input type="number" step="0.01" class="form-input" placeholder="0.00" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-modal-secondary"
+                        onclick="document.getElementById('recharge-modal').classList.add('hidden')">Cancelar</button>
+                    <button type="submit" class="btn-modal-primary">Confirmar Recarga</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
